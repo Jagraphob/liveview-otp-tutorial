@@ -9,9 +9,19 @@ defmodule TutorialWeb.CookiesLive do
       <div
         class="text-9xl cursor-pointer select-none transition-transform duration-100 hover:scale-110 active:scale-90"
         phx-click="increment"
+        phx-value-amount="1"
+        phx-keydown="increment"
+        phx-key="Enter"
+        tabindex="0"
       >
         🍪
       </div>
+      <div class="mt-10 space-x-4">
+        <button class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700" phx-click="increment" phx-value-amount="1">+1</button>
+        <button class="bg-green-600 text-white py-2 px-4 rounded hover:bg-green-700" phx-click="increment" phx-value-amount="5">+5</button>
+        <button class="bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700" phx-click="increment" phx-value-amount="10">+10</button>
+      </div>
+
     </div>
     """
   end
@@ -20,8 +30,8 @@ defmodule TutorialWeb.CookiesLive do
     {:ok, assign(socket, count: 0)}
   end
 
-  def handle_event("increment", _parms, socket) do
-    new_count = socket.assigns.count + 1
+  def handle_event("increment", %{"amount" => amount}, socket) do
+    new_count = socket.assigns.count + String.to_integer(amount)
     {:noreply, assign(socket, :count, new_count)}
   end
 end
