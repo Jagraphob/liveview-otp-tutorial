@@ -44,10 +44,8 @@ defmodule TutorialWeb.BeatlesLive do
     """
   end
 
-  def mount(params, _session, socket) do
+  def mount(_params, _session, socket) do
     beatles = Beatles.list_beatles()
-
-
 
     {:ok, assign(socket, beatles: beatles)}
   end
