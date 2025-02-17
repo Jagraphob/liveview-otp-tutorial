@@ -75,7 +75,7 @@ defmodule TutorialWeb.PollLive do
 
     {:noreply, socket}
   end
-
+{}
   def handle_info(:reset, socket) do
     {:noreply, assign(socket, votes: @initial_votes)}
   end
