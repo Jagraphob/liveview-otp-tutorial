@@ -1,6 +1,10 @@
 defmodule Tutorial.PollResults do
   use GenServer
 
+  alias Phoenix.PubSub
+
+  @pubsub_topic "poll"
+
   # Client API
 
   def start_link(_) do
@@ -19,6 +23,10 @@ defmodule Tutorial.PollResults do
     GenServer.cast(__MODULE__, :reset)
   end
 
+  def subscribe_to_updates do
+    PubSub.subscribe(Tutorial.PubSub, @pubsub_topic)
+  end
+
   # Server callback
 
   @initial_state %{"A" => 0, "B" => 0, "C" => 0, "D" => 0 }
@@ -31,13 +39,20 @@ defmodule Tutorial.PollResults do
     {:reply, state, state}
   end
 
-  def handle_cast(:reset, state) do
+  def handle_cast(:reset, _) do
+    broadcast_update(@initial_state)
+
     {:noreply, @initial_state}
   end
 
   def handle_cast({:vote, option}, state) do
     new_state = Map.update!(state, option, &(&1 + 1))
+    broadcast_update(new_state)
 
     {:noreply, new_state}
+  end
+
+  defp broadcast_update(state) do
+    PubSub.broadcast(Tutorial.PubSub, @pubsub_topic, {:update_results, state})
   end
 end
